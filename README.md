@@ -22,8 +22,8 @@ K8s 的代理伺服器調節
                       /              |     |             \
                      /               |     |              \
                   Channel             Master             Channel
-                    |               API Server             |
-                    V                                      V
+                    |               API Server              |
+                    V                                       V
                   (merge)       /                 \      (merge)    
                     |          /                   \        |
                     V         /                     \       V
