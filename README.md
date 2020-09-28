@@ -10,23 +10,32 @@ K8s 的代理伺服器調節
 Source API 由代理伺服器建立，拉取了 API Server 的 EndPonit 和 Service 資訊，分別由 Refector EndPoint 與 Refector Service 實現，透過 Client.EndPoint、Client.Service 的拉取資料產生對應的更新資料放入 Channle 中，最終通道中的資訊遞送到 Proxier，Prixier 為每個服務建立 Socket 實現了服務代理，並且建立相關 NAT 規則於 iptable 上，然後在 LB 上開通該 Service 的 LB 功能。
 
 
-          app.ProxyServer -------> SourceAPI
+          app.ProxyServer -------> SourceAPI (2)
                                       / \
                                      /   \
                                     /     \
                                    /       \
                                   /         \
+                                  
                                     Refector
                                       Node
+                                       (3)
+                                       
                              End Point     Service
+                             
                            /         |     |        \
                           /          |     |         \
                          /           |     |          \
                         /            |     |           \
-                       /  Client.EndPoint Client.Service\
-                      /              |     |             \
-                     /               |     |              \
-                  Channel             Master             Channel
+                                     |     |
+                                       (4)
+                          Client.EndPoint Client.Service 
+                       
+                      /              |     |              \
+                     /               |     |               \
+                     
+                                                           (5)
+                  Channel             Master (1)         Channel
                     |               API Server              |
                     V                                       V
                   (merge)       /                 \      (merge)    
@@ -35,8 +44,8 @@ Source API 由代理伺服器建立，拉取了 API Server 的 EndPonit 和 Serv
                 (broadcast)  /                       \  (broadcast)
                     |                                       |
                     |                                       |  (OnUpdate)
-                (OnUpdate) ------>    proxy.LB    <------ Poxier
+                (OnUpdate) ------>    proxy.LB (8)    <------ Proxier (6)
                                           |                 |
                                           V                 V
-                                         State         service info -> Socket
+                                         State         service info -> Socket (7)
                 
