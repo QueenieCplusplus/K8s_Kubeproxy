@@ -44,8 +44,9 @@ Source API 由代理伺服器建立，拉取了 API Server 的 EndPonit 和 Serv
                 (broadcast)  /                       \  (broadcast)
                     |                                       |
                     |                                       |  (OnUpdate)
-                (OnUpdate) ------>    proxy.LB (8)    <------ Proxier (6)
+                (OnUpdate) ----> LB.RR -- proxy.LB (8) <-- Proxier (6)
                                           |                 |
                                           V                 V
                                          State         service info -> Socket (7)
-                
+                                          |
+                 (此結構體稱為狀態機，用於保存此服務的 endpint 位址及目前對話狀態的 affinityPolicy)
